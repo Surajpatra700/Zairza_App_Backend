@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const eventSchema = require("./eventSchema");
+const eventSchema = require("../models/eventSchema");
 
 // ******************** POST request for uploading data ******************
 
@@ -9,6 +9,7 @@ try{
         const newEvent = new eventSchema({
             title: req.body.title,
             date_and_time: req.body.date_and_time,
+            wing: req.body.wing,
             event_img: req.body.event_img,
             description: req.body.description,
             senior_incharge: req.body.senior_incharge,
@@ -18,10 +19,7 @@ try{
 
         console.log(savedEvent);
         
-        res.json({
-            event: savedEvent,
-            response: "Success",            
-        });
+        res.json(savedEvent);
     });
 }catch(error){
     res.send(`${error}`);
@@ -66,8 +64,6 @@ try {
         }
     });
 } catch (error) {
-    // The try-catch block is unnecessary here since you're using async/await
-    // Remove the try-catch block, or you can handle errors within the route handler
     console.log(error);
 }
 
