@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require('mongoose')
 const multer  = require('multer');
+const UserSchema = require('../models/userSchema');
 
 const imageFile = new mongoose.Schema({
     imageUrl: String
@@ -21,24 +22,70 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+
 // let url;
-router.post('/upload', upload.single('image'), async (req, res) => {
+// router.post('/upload', upload.single('image'), async (req, res) => {
+//   if (req.file) {
+//     const imageUrl = '/uploads/' + req.file.filename; // This is the URL to save in the database
+
+//     const newImage = new Image({
+//       imageUrl: imageUrl
+//     });
+
+
+//     await newImage.save();
+//     res.status(200).json({ imageUrl: imageUrl });
+//     // url = newImage.imageUrl;
+
+//   } else {
+//     res.status(400).json({ error: 'No file uploaded' });
+//   }
+// });
+
+// Function to upload an image
+const uploadImage = async (req, res) => {
   if (req.file) {
-    const imageUrl = '/uploads/' + req.file.filename; // This is the URL to save in the database
+    const imageUrl = '/uploads/' + req.file.filename;
 
     const newImage = new Image({
       imageUrl: imageUrl
     });
 
-
     await newImage.save();
-    res.status(200).json({ imageUrl: imageUrl });
-    // url = newImage.imageUrl;
-
+    return newImage;
   } else {
-    res.status(400).json({ error: 'No file uploaded' });
+    throw new Error('No file uploaded');
+  }
+};
+
+// Function to associate an image with a user
+const uploadProfileImage = async (userId, image) => {
+  try {
+    const user = await UserSchema.findByIdAndUpdate(
+      userId,
+      { profileImage: image._id },
+      { new: true }
+    );
+
+    return { user, image };
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error associating image with user');
+  }
+};
+
+// Route to handle image upload
+router.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    const uploadedImage = await uploadImage(req);
+    const result = await uploadProfileImage(req.params.userId, uploadedImage);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 });
+
 
 module.exports = router; 
 // module.exports = { url }
