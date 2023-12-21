@@ -8,6 +8,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.477.0",
     "@aws-sdk/s3-request-presigner": "^3.477.0",

@@ -69,7 +69,10 @@ const userSchema = new mongoose.Schema({
         link: {
             type: String
         }
-    }]
+    }],
+    photoUrl: {
+        type: String
+    }
 });
 
 const User = mongoose.model('Profiles', userSchema);

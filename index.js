@@ -1,11 +1,12 @@
 require('dotenv').config();
 const express = require("express")
-const bodyparser = require("body-parser")
+// const bodyparser = require("body-parser")
 const PORT = process.env.PORT || 4600
 const event = require("./routes/router_event")
 const auth = require("./routes/authentication")
 const profiles = require("./routes/profiles")
 const fileUpload = require("./routes/fileUpload")
+const resources = require("./routes/resources")
 
 const app = express();
 require("./mongoDB/mongo_conn");
@@ -17,7 +18,7 @@ app.use("/zairza",event);
 app.use("/zairza",auth);
 app.use("/zairza",profiles);
 app.use("/zairza",fileUpload);
-
+app.use("/zairza",resources);
 
 app.listen(PORT, (req,res)=>{
     console.log("Server Running on: "+PORT);

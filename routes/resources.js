@@ -1,21 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const eventSchema = require("../models/eventSchema");
+const resourceSchema = require("../models/resourceSchema");
 
 // ******************** POST request for uploading data ******************
 
 try{
-    router.post("/uploadEvent", async(req,res)=>{
-        const newEvent = new eventSchema({
-            title: req.body.title,
-            date_and_time: req.body.date_and_time,
-            wing: req.body.wing,
-            event_img: req.body.event_img,
-            description: req.body.description,
-            senior_incharge: req.body.senior_incharge,
+    router.post("/uploadResources", async(req,res)=>{
+        const newResource = new resourceSchema({
+            roadmaps: {
+                googleDriveLinks: req.body.roadmaps.googleDriveLinks,
+            },
+            videos: {
+                youtubeLinks: req.body.videos.youtubeLinks,
+            },
+            session_presentations: req.body.session_presentations,
+            domain: req.body.domain,
         });    
 
-        const savedEvent = await newEvent.save();
+        const savedEvent = await newResource.save();
 
         console.log(savedEvent);
         
@@ -28,8 +30,8 @@ try{
 // ************************** Retrieving data ************************
 
 try{
-    router.get("/retrieveEvent", async(req,res)=>{
-        const data = await eventSchema.find();
+    router.get("/retrieveResources", async(req,res)=>{
+        const data = await resourceSchema.find();
         res.json(data);
     });
 }catch(error){
@@ -39,22 +41,25 @@ try{
 // ****************************** Updating data *********************
 
 try {
-    router.put('/updateEvent/:id', async (req, res) => {
+    router.put('/updateResources/:id', async (req, res) => {
         // Remove the unnecessary new eventSchema instance
         // You should create the newEvent object directly
         const newEvent = {
-            title: req.body.title,
-            date_and_time: req.body.date_and_time,
-            event_img: req.body.event_img,
-            description: req.body.description,
-            senior_incharge: req.body.senior_incharge,
+            roadmaps: {
+                googleDriveLinks: req.body.roadmaps.googleDriveLinks,
+            },
+            videos: {
+                youtubeLinks: req.body.videos.youtubeLinks,
+            },
+            session_presentations: req.body.session_presentations,
+            domain: req.body.domain,
         };
 
         // Assuming 'JWT_TOKEN' should be replaced with the actual ID you want to update
         const idToUpdate = req.params.id; // Replace with the actual ID
 
         // Use findByIdAndUpdate with the correct parameters
-        const data = await eventSchema.findByIdAndUpdate(idToUpdate, newEvent, { new: true });
+        const data = await resourceSchema.findByIdAndUpdate(idToUpdate, newEvent, { new: true });
 
         if (!data) {
             // Handle the case where the event with the provided ID is not found
